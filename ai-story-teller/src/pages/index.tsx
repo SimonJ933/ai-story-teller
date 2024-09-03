@@ -1,9 +1,20 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import Header from "@/components/Molecules/Header";
-import WindowBox from "@/components/Organism/WindowBox";
+import Header from "@/components/Molecules/Header/Header";
+import WindowBox from "@/components/Organism/WindowBox/WindowBox";
+import InputBox from "@/components/Atoms/InputBox/InputBox";
+import { useState } from "react";
+import SelectBox from "@/components/Molecules/SelectBox/SelectBox";
+import { listaGeneri } from "@/constats/common";
+import Button from "@/components/Atoms/Button/Button";
 
 export default function Home() {
+  const [protagonista, setProtagonista] = useState("");
+  const [antagonista, setAntagonista] = useState("");
+  const [genere, setGenere] = useState("");
+  const handleGenerate = () => {
+    console.log({ protagonista, antagonista, genere });
+  };
   return (
     <>
       <Head>
@@ -16,7 +27,30 @@ export default function Home() {
         <Header title="AI-Story-Teller" />
 
         <div className={styles.content}>
-          <WindowBox title="Enter Story Info" />
+          <WindowBox title="Enter Story Info">
+            <div className={styles.container}>
+              <div className={styles.img}>
+                <img src="icons8-medieval-64.png" />
+              </div>
+              <InputBox label="Nome Protagonista :" value={protagonista} setValue={setProtagonista} />
+              <div className={styles.img}>
+                <img src="icons8-medieval-62.png" />
+              </div>
+              <InputBox label="Nome Antagonista :" value={antagonista} setValue={setAntagonista} />
+            </div>
+            <div className={styles.container}>
+              <div className={styles.img}>
+                <img src="icons8-comedy-48.png" />
+              </div>
+              <SelectBox label="Seleziona Genere:" list={listaGeneri} setAction={setGenere} />
+            </div>
+
+            <Button
+              label="Genera"
+              onClick={handleGenerate}
+              disabled={protagonista.trim().length <= 0 || antagonista.trim().length <= 0 || genere.trim().length <= 0}
+            />
+          </WindowBox>
         </div>
       </main>
     </>
