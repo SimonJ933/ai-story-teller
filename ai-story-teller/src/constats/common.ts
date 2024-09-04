@@ -8,12 +8,12 @@ export const listaGeneri = [
     value: "fantasy",
   },
   {
-    label: "Avventura",
-    value: "avventura",
+    label: "Adventure",
+    value: "Adventure",
   },
   {
-    label: "Romantico",
-    value: "romantico",
+    label: "Romantic",
+    value: "romantic",
   },
   {
     label: "Giallo",

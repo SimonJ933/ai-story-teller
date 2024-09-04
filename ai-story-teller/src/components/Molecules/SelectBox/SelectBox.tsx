@@ -20,7 +20,7 @@ function SelectBox(props: SelectBoxProps) {
       <h3>{label}</h3>
       <select onChange={handleChange}>
         <option value="" hidden>
-          seleziona
+          Choose
         </option>
         {list.map((item) => (
           <option key={item.value} value={item.value}>

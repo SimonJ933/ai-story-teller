@@ -1,5 +1,5 @@
 import Head from "next/head";
-import styles from "@/styles/Home.module.css";
+import style from "@/styles/Home.module.css";
 import Header from "@/components/Molecules/Header/Header";
 import WindowBox from "@/components/Organism/WindowBox/WindowBox";
 import InputBox from "@/components/Atoms/InputBox/InputBox";
@@ -7,14 +7,32 @@ import { useState } from "react";
 import SelectBox from "@/components/Molecules/SelectBox/SelectBox";
 import { listaGeneri } from "@/constats/common";
 import Button from "@/components/Atoms/Button/Button";
-
+import { GenerateContentCandidate, GoogleGenerativeAI } from "@google/generative-ai";
+import SwitchBox from "@/components/Molecules/SwitchBox/SwitchBox";
 export default function Home() {
   const [protagonista, setProtagonista] = useState("");
   const [antagonista, setAntagonista] = useState("");
   const [genere, setGenere] = useState("");
-  const handleGenerate = () => {
-    console.log({ protagonista, antagonista, genere });
+  const [response, setResponse] = useState("");
+  const [pegi18, setPegi18] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerate = async () => {
+    setLoading(true);
+    const prompt = `genere un racconto ${genere}, per ${pegi18 ? "adulti" : "bambini"}con il protagonista ${protagonista} e l'antagonista ${antagonista}`;
+
+    if (process.env.NEXT_PUBLIC_GEMINI_KEY) {
+      const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const result = await model.generateContent(prompt);
+      const output = (result.response.candidates as GenerateContentCandidate[])[0].content.parts[0].text;
+      if (output) {
+        setResponse(output);
+      }
+    }
+    setLoading(false);
   };
+
   return (
     <>
       <Head>
@@ -23,33 +41,39 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="icons8-scroll-64.png" />
       </Head>
-      <main className={styles.main}>
+      <main className={style.main}>
         <Header title="AI-Story-Teller" />
 
-        <div className={styles.content}>
-          <WindowBox title="Enter Story Info">
-            <div className={styles.container}>
-              <div className={styles.img}>
+        <div className={style.content}>
+          <WindowBox title="Create A Story">
+            <div className={style.container}>
+              <div className={style.img}>
                 <img src="icons8-medieval-64.png" />
               </div>
-              <InputBox label="Nome Protagonista :" value={protagonista} setValue={setProtagonista} />
-              <div className={styles.img}>
+              <InputBox label="Main Character:" value={protagonista} setValue={setProtagonista} />
+              <div className={style.img}>
                 <img src="icons8-medieval-62.png" />
               </div>
-              <InputBox label="Nome Antagonista :" value={antagonista} setValue={setAntagonista} />
-            </div>
-            <div className={styles.container}>
-              <div className={styles.img}>
+              <InputBox label="Antagonist:" value={antagonista} setValue={setAntagonista} />
+              <div className={style.img}>
                 <img src="icons8-comedy-48.png" />
               </div>
-              <SelectBox label="Seleziona Genere:" list={listaGeneri} setAction={setGenere} />
+              <SelectBox label="Choose A Genre:" list={listaGeneri} setAction={setGenere} />
             </div>
-
+            <SwitchBox label="Viewing:" value={pegi18} setValue={setPegi18} />
             <Button
-              label="Genera"
+              label="Create Story"
               onClick={handleGenerate}
               disabled={protagonista.trim().length <= 0 || antagonista.trim().length <= 0 || genere.trim().length <= 0}
             />
+
+            {loading && (
+              <div className={style.loadingContainer}>
+                <p className={style.loadingText}>Loading...</p>
+              </div>
+            )}
+
+            {!loading && response && <div className={style.result}>{response}</div>}
           </WindowBox>
         </div>
       </main>
