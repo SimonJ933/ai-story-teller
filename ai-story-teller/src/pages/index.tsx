@@ -16,10 +16,13 @@ export default function Home() {
   const [response, setResponse] = useState("");
   const [pegi18, setPegi18] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [ambientazione, setAmbientazione] = useState("");
 
   const handleGenerate = async () => {
     setLoading(true);
-    const prompt = `genere un racconto ${genere}, per ${pegi18 ? "adulti" : "bambini"}con il protagonista ${protagonista} e l'antagonista ${antagonista}`;
+    const prompt = `genere un racconto ${genere}, per ${
+      pegi18 ? "adulti" : "bambini"
+    }, per ${ambientazione}, con il protagonista ${protagonista} e l'antagonista ${antagonista}`;
 
     if (process.env.NEXT_PUBLIC_GEMINI_KEY) {
       const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_KEY);
@@ -47,20 +50,37 @@ export default function Home() {
         <div className={style.content}>
           <WindowBox title="Create A Story">
             <div className={style.container}>
-              <div className={style.img}>
-                <img src="icons8-medieval-64.png" />
+              <div className={style.inputGroup}>
+                <div className={style.img}>
+                  <img src="icons8-medieval-64.png" />
+                </div>
+                <InputBox label="MAIN CHARACTER:" value={protagonista} setValue={setProtagonista} />
               </div>
-              <InputBox label="Main Character:" value={protagonista} setValue={setProtagonista} />
-              <div className={style.img}>
-                <img src="icons8-medieval-62.png" />
+
+              <div className={style.inputGroup}>
+                <div className={style.img}>
+                  <img src="icons8-medieval-62.png" />
+                </div>
+                <InputBox label="ANTAGONIST:" value={antagonista} setValue={setAntagonista} />
               </div>
-              <InputBox label="Antagonist:" value={antagonista} setValue={setAntagonista} />
-              <div className={style.img}>
-                <img src="icons8-comedy-48.png" />
+
+              <div className={style.inputGroup}>
+                <div className={style.img}>
+                  <img src="icons8-map-50.png" />
+                </div>
+                <InputBox label="SETTING:" value={ambientazione} setValue={setAmbientazione} />
               </div>
-              <SelectBox label="Choose A Genre:" list={listaGeneri} setAction={setGenere} />
+
+              <div className={style.inputGroup}>
+                <div className={style.img}>
+                  <img src="icons8-comedy-48.png" />
+                </div>
+                <SelectBox label="CHOOSE A GENRE:" list={listaGeneri} setAction={setGenere} />
+              </div>
             </div>
-            <SwitchBox label="Viewing:" value={pegi18} setValue={setPegi18} />
+
+            <SwitchBox label="CONTENT" value={pegi18} setValue={setPegi18} />
+
             <Button
               label="Create Story"
               onClick={handleGenerate}

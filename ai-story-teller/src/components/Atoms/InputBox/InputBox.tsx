@@ -19,7 +19,3 @@ function InputBox(props: InputBoxProps) {
 }
 
 export default InputBox;
-
-{
-  /* <img src="icons8-medieval-62.png" /> */
-}

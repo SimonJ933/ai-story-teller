@@ -11,17 +11,12 @@
   background-color: var(--color-orange);
 }
 
-.main h1 {
-  font-family: Pirata One;
-  font-size: 50px;
-  color: #252422;
-  margin: 0;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--primary-color);
+.title {
+  @include fancy-text;
+  text-align: center;
+  margin: 50px 0;
+  letter-spacing: 2px;
 }
-
 .logo img {
   height: 80px;
 }
