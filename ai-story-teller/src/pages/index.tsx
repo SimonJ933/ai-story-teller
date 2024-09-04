@@ -17,12 +17,13 @@ export default function Home() {
   const [pegi18, setPegi18] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ambientazione, setAmbientazione] = useState("");
+  const [periodo, setPeriodo] = useState("");
 
   const handleGenerate = async () => {
     setLoading(true);
     const prompt = `genere un racconto ${genere}, per ${
       pegi18 ? "adulti" : "bambini"
-    }, per ${ambientazione}, con il protagonista ${protagonista} e l'antagonista ${antagonista}`;
+    }, per ${ambientazione}, per periodo storico ${periodo} con il protagonista ${protagonista} e l'antagonista ${antagonista}`;
 
     if (process.env.NEXT_PUBLIC_GEMINI_KEY) {
       const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_KEY);
@@ -44,57 +45,64 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="icons8-scroll-64.png" />
       </Head>
+
       <main className={style.main}>
         <Header title="AI-Story-Teller" />
 
-        <div className={style.content}>
-          <WindowBox title="Create A Story">
-            <div className={style.container}>
-              <div className={style.inputGroup}>
-                <div className={style.img}>
-                  <img src="icons8-medieval-64.png" />
+        <div className={style.container}>
+          <div className={style.container_inner}>
+            <div className={style.content}>
+              <WindowBox title="Create A Story">
+                <div className={style.inputGroup}>
+                  <div className={style.img}>
+                    <img src="icons8-medieval-64.png" />
+                  </div>
+                  <InputBox label="MAIN CHARACTER:" value={protagonista} setValue={setProtagonista} />
                 </div>
-                <InputBox label="MAIN CHARACTER:" value={protagonista} setValue={setProtagonista} />
-              </div>
 
-              <div className={style.inputGroup}>
-                <div className={style.img}>
-                  <img src="icons8-medieval-62.png" />
+                <div className={style.inputGroup}>
+                  <div className={style.img}>
+                    <img src="icons8-medieval-62.png" />
+                  </div>
+                  <InputBox label="ANTAGONIST:" value={antagonista} setValue={setAntagonista} />
                 </div>
-                <InputBox label="ANTAGONIST:" value={antagonista} setValue={setAntagonista} />
-              </div>
 
-              <div className={style.inputGroup}>
-                <div className={style.img}>
-                  <img src="icons8-map-50.png" />
+                <div className={style.inputGroup}>
+                  <div className={style.img}>
+                    <img src="icons8-map-50.png" />
+                  </div>
+                  <InputBox label="SETTING:" value={ambientazione} setValue={setAmbientazione} />
                 </div>
-                <InputBox label="SETTING:" value={ambientazione} setValue={setAmbientazione} />
-              </div>
 
-              <div className={style.inputGroup}>
-                <div className={style.img}>
-                  <img src="icons8-comedy-48.png" />
+                <div className={style.inputGroup}>
+                  <div className={style.img}>
+                    <img src="icons8-historical-48.png" />
+                  </div>
+                  <InputBox label="TIME PERIOD:" value={periodo} setValue={setPeriodo} />
                 </div>
-                <SelectBox label="CHOOSE A GENRE:" list={listaGeneri} setAction={setGenere} />
-              </div>
+
+                <div className={style.inputGroup}>
+                  <div className={style.img}>
+                    <img src="icons8-comedy-48.png" />
+                  </div>
+                  <SelectBox label="CHOOSE A GENRE:" list={listaGeneri} setAction={setGenere} />
+                </div>
+
+                <SwitchBox label="CONTENT" value={pegi18} setValue={setPegi18} />
+                <Button
+                  label="Create Story"
+                  onClick={handleGenerate}
+                  disabled={protagonista.trim().length <= 0 || antagonista.trim().length <= 0 || genere.trim().length <= 0}
+                />
+                {loading && (
+                  <div className={style.loadingContainer}>
+                    <p className={style.loadingText}>Loading...</p>
+                  </div>
+                )}
+                {!loading && response && <div className={style.result}>{response}</div>}
+              </WindowBox>
             </div>
-
-            <SwitchBox label="CONTENT" value={pegi18} setValue={setPegi18} />
-
-            <Button
-              label="Create Story"
-              onClick={handleGenerate}
-              disabled={protagonista.trim().length <= 0 || antagonista.trim().length <= 0 || genere.trim().length <= 0}
-            />
-
-            {loading && (
-              <div className={style.loadingContainer}>
-                <p className={style.loadingText}>Loading...</p>
-              </div>
-            )}
-
-            {!loading && response && <div className={style.result}>{response}</div>}
-          </WindowBox>
+          </div>
         </div>
       </main>
     </>
