@@ -1,4 +1,4 @@
-@mixin button-login-style {
+@mixin button {
   justify-content: normal;
   align-items: center;
   box-sizing: border-box;
@@ -18,5 +18,5 @@
   font-weight: bold;
   text-transform: uppercase;
   color: #a4363e;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  text-shadow: 3px 3px 1px rgba(0, 0, 0, 0.5);
 }

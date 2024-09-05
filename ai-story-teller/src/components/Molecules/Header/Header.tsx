@@ -13,7 +13,6 @@ function Header(props: HeaderProps) {
         <img src="icons8-parchment-100.png" />
       </div>
       <h1 className={style.title}>{title}</h1>
-      <Button label="Login" disabled={false} />
     </div>
   );
 }

@@ -3,12 +3,14 @@ import style from "@/styles/Home.module.css";
 import Header from "@/components/Molecules/Header/Header";
 import WindowBox from "@/components/Organism/WindowBox/WindowBox";
 import InputBox from "@/components/Atoms/InputBox/InputBox";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import SelectBox from "@/components/Molecules/SelectBox/SelectBox";
 import { listaGeneri } from "@/constats/common";
 import Button from "@/components/Atoms/Button/Button";
 import { GenerateContentCandidate, GoogleGenerativeAI } from "@google/generative-ai";
 import SwitchBox from "@/components/Molecules/SwitchBox/SwitchBox";
+import Toast from "@/components/Atoms/Toast/Toast";
+
 export default function Home() {
   const [protagonista, setProtagonista] = useState("");
   const [antagonista, setAntagonista] = useState("");
@@ -18,6 +20,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [ambientazione, setAmbientazione] = useState("");
   const [periodo, setPeriodo] = useState("");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -32,11 +37,40 @@ export default function Home() {
       const output = (result.response.candidates as GenerateContentCandidate[])[0].content.parts[0].text;
       if (output) {
         setResponse(output);
+        setShowToast(true);
       }
     }
     setLoading(false);
   };
 
+  const handleVoice = () => {
+    const utterance = new SpeechSynthesisUtterance(response);
+    utterance.lang = "it-IT";
+    setIsPlaying(true);
+    setIsPaused(false);
+
+    speechSynthesis.speak(utterance);
+
+    utterance.onend = () => {
+      setIsPlaying(false);
+    };
+  };
+  const handlePauseVoice = () => {
+    speechSynthesis.pause();
+    setIsPaused(true);
+    setIsPlaying(false);
+  };
+  const handleStopVoice = () => {
+    speechSynthesis.cancel();
+    setIsPlaying(false);
+    setIsPaused(false);
+  };
+  const handleResumeVoice = () => {
+    speechSynthesis.resume();
+    setIsPaused(false);
+
+    setIsPlaying(true);
+  };
   return (
     <>
       <Head>
@@ -47,12 +81,11 @@ export default function Home() {
       </Head>
 
       <main className={style.main}>
-        <Header title="AI-Story-Teller" />
-
+        <Header title="Story-Teller" />
         <div className={style.container}>
           <div className={style.container_inner}>
             <div className={style.content}>
-              <WindowBox title="Create A Story">
+              <WindowBox title="Welcome Traveler!">
                 <div className={style.inputGroup}>
                   <div className={style.img}>
                     <img src="icons8-medieval-64.png" />
@@ -88,22 +121,50 @@ export default function Home() {
                   <SelectBox label="CHOOSE A GENRE:" list={listaGeneri} setAction={setGenere} />
                 </div>
 
-                <SwitchBox label="CONTENT" value={pegi18} setValue={setPegi18} />
+                <div className={style.switch_container}>
+                  <SwitchBox label="CONTENT" value={pegi18} setValue={setPegi18} />
+                </div>
+
                 <Button
                   label="Create Story"
                   onClick={handleGenerate}
-                  disabled={protagonista.trim().length <= 0 || antagonista.trim().length <= 0 || genere.trim().length <= 0}
+                  disabled={
+                    protagonista.trim().length <= 0 ||
+                    antagonista.trim().length <= 0 ||
+                    genere.trim().length <= 0 ||
+                    periodo.trim().length <= 0 ||
+                    ambientazione.trim().length <= 0
+                  }
                 />
-                {loading && (
+                {loading ? (
                   <div className={style.loadingContainer}>
                     <p className={style.loadingText}>Loading...</p>
                   </div>
+                ) : (
+                  !loading &&
+                  response && (
+                    <div className={style.result}>
+                      <div className={style.btn}>
+                        {isPlaying ? (
+                          <>
+                            <Button label="Pause" onClick={handlePauseVoice} disabled={false} />
+                            <Button label="Stop" onClick={handleStopVoice} disabled={false} />
+                          </>
+                        ) : isPaused ? (
+                          <Button label="Resume" onClick={handleResumeVoice} disabled={false} />
+                        ) : (
+                          <Button label="Play" onClick={handleVoice} disabled={false} />
+                        )}
+                      </div>
+                      {response}
+                    </div>
+                  )
                 )}
-                {!loading && response && <div className={style.result}>{response}</div>}
               </WindowBox>
             </div>
           </div>
         </div>
+        {showToast && <Toast title="Storia generata" message="La tua storia è stata generata con successo!" setAction={setShowToast} />}{" "}
       </main>
     </>
   );
