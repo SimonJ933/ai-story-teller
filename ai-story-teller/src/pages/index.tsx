@@ -192,24 +192,22 @@ export default function Home() {
                     </div>
                   )
                 )}
-                <div>
+
+                {!loading && response && domande.length > 0 && (
                   <div>
-                    <h2>Domande</h2>
+                    <h2>QUESTION TIME!!</h2>
                     <ul>
                       {domande.map((domanda, index) => (
                         <li key={index}>{domanda}</li>
                       ))}
                     </ul>
-                  </div>
-                  <div>
-                    <h2>Risposte</h2>
                     <ul>
                       {risposte.map((risposta, index) => (
                         <li key={index}>{risposta}</li>
                       ))}
                     </ul>
                   </div>
-                </div>
+                )}
               </WindowBox>
             </div>
           </div>
