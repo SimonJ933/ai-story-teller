@@ -25,7 +25,7 @@ export default function Home() {
   const [showToast, setShowToast] = useState(false);
   const [domande, setDomande] = useState<string[]>([]);
   const [risposte, setRisposte] = useState<string[]>([]);
-
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
   const handleGenerate = async () => {
     setLoading(true);
     const prompt = `genere un racconto ${genere}, per ${
@@ -51,6 +51,7 @@ export default function Home() {
   };
 
   const handleGenerateQuestionsAndAnswers = async (storia: string) => {
+    setLoadingQuestions(true);
     const promptQuestionsAndAnswers = `Crea 5 domande di comprensione del testo per la seguente storia e fornisci anche le risposte a ciascuna domanda: ${storia}`;
 
     if (process.env.NEXT_PUBLIC_GEMINI_KEY) {
@@ -74,6 +75,7 @@ export default function Home() {
         setRisposte([]);
       }
     }
+    setLoadingQuestions(false);
   };
   const handleVoice = () => {
     const utterance = new SpeechSynthesisUtterance(response);
@@ -193,20 +195,30 @@ export default function Home() {
                   )
                 )}
 
-                {!loading && response && domande.length > 0 && (
-                  <div>
-                    <h2>QUESTION TIME!!</h2>
-                    <ul>
-                      {domande.map((domanda, index) => (
-                        <li key={index}>{domanda}</li>
-                      ))}
-                    </ul>
-                    <ul>
-                      {risposte.map((risposta, index) => (
-                        <li key={index}>{risposta}</li>
-                      ))}
-                    </ul>
-                  </div>
+                {!loading && response && (
+                  <>
+                    {loadingQuestions ? (
+                      <div className={style.loadingContainer}>
+                        <p className={style.loadingText}>Loading...</p>
+                      </div>
+                    ) : (
+                      domande.length > 0 && (
+                        <div>
+                          <h2>QUESTION TIME!!</h2>
+                          <ul>
+                            {domande.map((domanda, index) => (
+                              <li key={index}>{domanda}</li>
+                            ))}
+                          </ul>
+                          <ul>
+                            {risposte.map((risposta, index) => (
+                              <li key={index}>{risposta}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    )}
+                  </>
                 )}
               </WindowBox>
             </div>
