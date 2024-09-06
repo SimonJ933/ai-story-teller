@@ -23,6 +23,7 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [domande, setDomande] = useState<string[]>([]);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -30,19 +31,36 @@ export default function Home() {
       pegi18 ? "adulti" : "bambini"
     }, per ${ambientazione}, per periodo storico ${periodo} con il protagonista ${protagonista} e l'antagonista ${antagonista}`;
 
+    try {
+      if (process.env.NEXT_PUBLIC_GEMINI_KEY) {
+        const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(prompt);
+        const output = (result.response.candidates as GenerateContentCandidate[])[0].content.parts[0].text;
+        if (output) {
+          setResponse(output);
+          setShowToast(true);
+          handleGenerateQuestions(output);
+        }
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error Creating Story");
+    }
+  };
+
+  const handleGenerateQuestions = async (storia: string) => {
+    const promptQuestions = `Crea 5 domande di comprensione del testo per la seguente storia:${storia}`;
     if (process.env.NEXT_PUBLIC_GEMINI_KEY) {
       const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const result = await model.generateContent(prompt);
-      const output = (result.response.candidates as GenerateContentCandidate[])[0].content.parts[0].text;
-      if (output) {
-        setResponse(output);
-        setShowToast(true);
+      const result = await model.generateContent(promptQuestions);
+      const questions = (result.response.candidates as GenerateContentCandidate[])[0].content.parts[0].text;
+      if (questions) {
+        setDomande(questions.split("\n").filter((q) => q.trim() !== ""));
       }
     }
-    setLoading(false);
   };
-
   const handleVoice = () => {
     const utterance = new SpeechSynthesisUtterance(response);
     utterance.lang = "it-IT";
@@ -81,7 +99,7 @@ export default function Home() {
       </Head>
 
       <main className={style.main}>
-        <Header title="Story-Teller" />
+        <Header title="Story-Teller" active={false} />
         <div className={style.container}>
           <div className={style.container_inner}>
             <div className={style.content}>
@@ -160,6 +178,14 @@ export default function Home() {
                     </div>
                   )
                 )}
+                <div className={style.questions}>
+                  <h3>Question Time:</h3>
+                  <ul>
+                    {domande.map((domanda, index) => (
+                      <li key={index}>{domanda}</li>
+                    ))}
+                  </ul>
+                </div>
               </WindowBox>
             </div>
           </div>

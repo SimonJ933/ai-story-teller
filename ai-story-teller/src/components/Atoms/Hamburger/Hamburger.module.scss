@@ -1,0 +1,49 @@
+/* Style principale per il wrapper del pulsante hamburger */
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 40px;
+  height: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+/* Quando il menu è attivo */
+.active {
+  transform: rotate(180deg); /* Esempio di animazione */
+}
+
+/* Barre del pane superiore e inferiore */
+.breadUp,
+.breadDown {
+  width: 100%;
+  height: 5px;
+  background-color: #333; /* Colore delle barre */
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+/* Barra centrale */
+.hamb {
+  width: 100%;
+  height: 5px;
+  background-color: #333;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+/* Animazione quando il menu è attivo: trasforma le barre in una X */
+.active .breadUp {
+  transform: rotate(45deg) translate(7px, 7px);
+}
+
+.active .breadDown {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+.active .hamb {
+  opacity: 0; /* Nascondi la barra centrale */
+}
