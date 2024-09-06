@@ -9,6 +9,8 @@ Story Generator è un'app innovativa che sfrutta la potenza dell'intelligenza ar
 - **Modalità per adulti e bambini:** Scegli il tipo di contenuto in base al pubblico, adattando lo stile e il tono della narrazione.
 - **Parte Dedicata Alla Comprensione del testo:** Una volta finita la lettura, verrano fornite delle domande con le risposte, per una migliore comprensione.
 
+  -**Sintetizzatore vocale di Google:** Ora puoi ascoltare le storie narrate con la tecnologia di sintesi vocale di Google, rendendo la lettura ancora più accessibile e coinvolgente. Perfetto per chi ama ascoltare le storie in movimento o per chi ha esigenze di accessibilità.
+
 ## Input disponibili
 
 - **Nome del protagonista:** Inserisci il nome del personaggio principale.
@@ -26,8 +28,8 @@ L'app è stata sviluppata utilizzando le seguenti tecnologie:
 - **TypeScript:** Linguaggio che aggiunge tipizzazione statica a JavaScript, migliorando la qualità del codice e la manutenzione.
 - **SCSS:** Preprocessore CSS che permette di utilizzare funzionalità avanzate come variabili, annidamento e mixins per gestire meglio lo stile dell'applicazione.
 
+---
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Story Generator App
 
 Story Generator is an innovative app that harnesses the power of artificial intelligence (AI) to create personalized stories based on user inputs. Enter details like protagonists, antagonist, location, historical period, and genre, and watch as the AI generates a unique story for you. The app also includes a text comprehension section with custom questions based on the generated story.
@@ -38,8 +40,6 @@ Story Generator is an innovative app that harnesses the power of artificial inte
 - **AI Story Generation:** The app uses AI models to create original, tailored stories in seconds.
 - **Adult and Child Modes:** Choose the content type based on the audience, adjusting the style and tone of the narrative accordingly.
 - **Text Comprehension Questions:** After generating the story, the app presents 5 specific questions to assess understanding of the text.
-
-
 
 ## Available Inputs
 
@@ -57,10 +57,6 @@ The app is built using the following technologies:
 - **Next.js:** React framework for server-side rendering (SSR) web applications.
 - **TypeScript:** Language that adds static typing to JavaScript, improving code quality and maintainability.
 - **SCSS:** CSS preprocessor that allows for advanced features like variables, nesting, and mixins for better style management.
-
-
-
-
 
 Sviluppato con ❤️ da Simone Grillo
 Developed with ❤️ by Simone Grillo
