@@ -46,7 +46,7 @@ export default function Home() {
       }
       setLoading(false);
     } catch (error) {
-      console.error("Error Creating ");
+      console.error("Error Creating Story");
     }
   };
 
