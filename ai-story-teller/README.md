@@ -7,6 +7,7 @@ Story Generator è un'app innovativa che sfrutta la potenza dell'intelligenza ar
 - **Input personalizzati:** Inserisci dettagli come il nome del protagonista, dell'antagonista, il luogo, il periodo storico e il genere della storia.
 - **Generazione di storie AI:** L'app utilizza modelli di AI per creare storie originali e su misura in pochi secondi.
 - **Modalità per adulti e bambini:** Scegli il tipo di contenuto in base al pubblico, adattando lo stile e il tono della narrazione.
+- **Parte Dedicata Alla Comprensione del testo:** Una volta finita la lettura, verrano fornite delle domande con le risposte, per una migliore comprensione.
 
 ## Input disponibili
 
@@ -37,6 +38,8 @@ Story Generator is an innovative app that harnesses the power of artificial inte
 - **AI Story Generation:** The app uses AI models to create original, tailored stories in seconds.
 - **Adult and Child Modes:** Choose the content type based on the audience, adjusting the style and tone of the narrative accordingly.
 - **Text Comprehension Questions:** After generating the story, the app presents 5 specific questions to assess understanding of the text.
+
+
 
 ## Available Inputs
 
