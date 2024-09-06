@@ -24,6 +24,7 @@ export default function Home() {
   const [isPaused, setIsPaused] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [domande, setDomande] = useState<string[]>([]);
+  const [risposte, setRisposte] = useState<string[]>([]);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -40,7 +41,7 @@ export default function Home() {
         if (output) {
           setResponse(output);
           setShowToast(true);
-          handleGenerateQuestions(output);
+          handleGenerateQuestionsAndAnswers(output);
         }
       }
       setLoading(false);
@@ -49,15 +50,28 @@ export default function Home() {
     }
   };
 
-  const handleGenerateQuestions = async (storia: string) => {
-    const promptQuestions = `Crea 5 domande di comprensione del testo per la seguente storia:${storia}`;
+  const handleGenerateQuestionsAndAnswers = async (storia: string) => {
+    const promptQuestionsAndAnswers = `Crea 5 domande di comprensione del testo per la seguente storia e fornisci anche le risposte a ciascuna domanda: ${storia}`;
+
     if (process.env.NEXT_PUBLIC_GEMINI_KEY) {
-      const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const result = await model.generateContent(promptQuestions);
-      const questions = (result.response.candidates as GenerateContentCandidate[])[0].content.parts[0].text;
-      if (questions) {
-        setDomande(questions.split("\n").filter((q) => q.trim() !== ""));
+      try {
+        const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(promptQuestionsAndAnswers);
+
+        const content = (result.response.candidates as GenerateContentCandidate[])[0].content.parts[0].text;
+        if (content) {
+          const [questionsText, answersText] = content.split("Risposte:").map((part) => part.trim());
+          const questions = questionsText.split("\n").filter((q) => q.trim() !== "");
+          const answers = answersText?.split("\n").filter((a) => a.trim() !== "");
+
+          setDomande(questions || []);
+          setRisposte(answers || []);
+        }
+      } catch (error) {
+        console.error("Errore nella generazione delle domande e risposte:", error);
+        setDomande([]);
+        setRisposte([]);
       }
     }
   };
@@ -178,13 +192,23 @@ export default function Home() {
                     </div>
                   )
                 )}
-                <div className={style.questions}>
-                  <h3>Question Time:</h3>
-                  <ul>
-                    {domande.map((domanda, index) => (
-                      <li key={index}>{domanda}</li>
-                    ))}
-                  </ul>
+                <div>
+                  <div>
+                    <h2>Domande</h2>
+                    <ul>
+                      {domande.map((domanda, index) => (
+                        <li key={index}>{domanda}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h2>Risposte</h2>
+                    <ul>
+                      {risposte.map((risposta, index) => (
+                        <li key={index}>{risposta}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </WindowBox>
             </div>
